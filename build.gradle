@@ -1,0 +1,53 @@
+buildscript {
+    repositories {
+		mavenCentral()
+        jcenter()
+        maven {
+			name = "forge"
+			url = "http://files.minecraftforge.net/maven"
+		}
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+    }
+}
+
+plugins {
+    id 'com.matthewprenger.cursegradle' version '1.0.5'
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+loadProperties()
+
+version = config.mod_version
+group = "net.arez0101.dynguis"
+archivesBaseName = "Dynamic GUIs"
+
+def loadProperties() {
+	ext.configFile = file "build.properties"
+	
+	configFile.withReader {
+		def prop = new Properties()
+		prop.load(it)
+		ext.config = new ConfigSlurper().parse prop
+	}
+	
+	ext.buildnumber = "DEV"
+	
+	if (System.getenv().BUILD_NUMBER)
+		project.buildnumber = System.getenv().BUILD_NUMBER
+	if (System.getenv().TRAVIS_BUILD_NUMBER)
+		project.buildnumber = System.getenv().TRAVIS_BUILD_NUMBER
+	if (System.getenv().CI) {
+		//project.buildnumber += "-DEV"
+	}
+	if (System.getenv().RELEASE || System.getenv().TRAVIS_TAG)
+		project.buildnumber = "RELEASE"
+		
+	logger.lifecycle "BUILDING VERSION: " + project.buildnumber
+}
+
+apply from: 'gradle/forge.gradle'
+apply from: 'gradle/dev.gradle'
+apply from: 'gradle/deploy.gradle'

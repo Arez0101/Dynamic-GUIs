@@ -1,0 +1,51 @@
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        name "forge"
+        url "http://files.minecraftforge.net/maven/"
+    }
+}
+dependencies {
+	// Project lombok
+    compile "org.projectlombok:lombok:1.14.4"
+}
+
+
+minecraft {
+    version = "${config.minecraft_version}-${config.forge_version}"
+    runDir = "run"
+    
+    replaceIn "Reference.java"
+    replace "@MODID@", project.config.modid
+    replace "@MOD_NAME@", project.config.mod_name
+    replace "@VERSION@", project.config.version
+    replace "@MC_VERSION@", project.config.minecraft_version
+    replace "@FORGE_VERSION@", project.config.forge_version
+	
+    mappings = "${config.mcp_mappings_version}"
+}
+
+if (project.buildnumber.equals("RELEASE"))
+    version = "${config.minecraft_version}-${config.mod_version}"
+else
+    version = "${config.minecraft_version}-${config.mod_version}-${buildnumber}"
+
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+                
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+        
+    // copy everything else, that is not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}

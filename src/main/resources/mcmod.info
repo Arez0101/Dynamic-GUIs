@@ -1,0 +1,16 @@
+[
+{
+  "modid": "dynguis",
+  "name": "Dynamic GUIs",
+  "description": "",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Arez0101"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
